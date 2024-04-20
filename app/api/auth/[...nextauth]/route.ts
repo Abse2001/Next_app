@@ -1,6 +1,6 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { CustomSession } from "@global-types";
+import { CustomSession, CustomProfile } from "@global-types";
 import User from "@models/user";
 import connectToDB from "@utils/database";
 const handler = NextAuth({
@@ -33,7 +33,7 @@ const handler = NextAuth({
           await User.create({
             email: profile?.email,
             username: profile?.name?.replace(" ", "").toLowerCase(),
-            image: profile?.picture,
+            image: (profile as CustomProfile)?.picture,
           });
         }
 
