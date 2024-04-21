@@ -3,6 +3,8 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@components/Form";
+import { useSession } from "next-auth/react";
+import { CustomSession } from "@global-types";
 
 const EditPrompt = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -14,6 +16,7 @@ const EditPrompt = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
+  const { data: session } = useSession();
   useEffect(() => {
     const getPromptDetails = async () => {
       const res = await fetch(`/api/prompt/${promptId}`);
@@ -42,7 +45,11 @@ const EditPrompt = () => {
         }),
       });
       if (res.ok) {
-        router.push("/");
+        router.push(
+          `/profile?id=${(session?.user as CustomSession)?.id}&username=${
+            session?.user?.name
+          }`
+        );
       }
     } catch (error) {
       console.log(error);
